@@ -1,18 +1,12 @@
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
-// Import the functions you need from the SDKs you need
-import { initializeApp, getApps } from "firebase-admin/app";
-import { getFirestore } from "firebase/firestore";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { initializeApp } from 'firebase/app';
+import { doc, getFirestore, onSnapshot } from "firebase/firestore";
 import { getAuth, onAuthStateChanged, type User } from "firebase/auth";
 import { getStorage } from "firebase/storage";
-import { writable } from "svelte/store";
+import { writable, type Readable, derived } from "svelte/store";
 
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCpiecbea0cfI8hi2jughPUA9hV9O3Vfcs", // this is a public project id, not security issue
+  apiKey: "AIzaSyCpiecbea0cfI8hi2jughPUA9hV9O3Vfcs",
   authDomain: "auth-app-e21d2.firebaseapp.com",
   projectId: "auth-app-e21d2",
   storageBucket: "auth-app-e21d2.appspot.com",
@@ -20,19 +14,12 @@ const firebaseConfig = {
   appId: "1:990208090387:web:e69330d7e414fb72d4fae6"
 };
 
+
 // Initialize Firebase
-let fb;
-if ( getApps().length <1 ) {
-  fb = initializeApp(firebaseConfig);
-} else {
-  fb = getApps()[0];
-}
-export const app = fb
-//export const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
 export const db = getFirestore();
 export const auth = getAuth();
 export const storage = getStorage();
-
 
 
 /**
@@ -50,18 +37,61 @@ function userStore() {
   }
 
   const { subscribe } = writable(auth?.currentUser ?? null, (set) => {
-    console.log(auth)
     unsubscribe = onAuthStateChanged(auth, (user) => {
-      set(user); 
+      set(user);
     });
-    console.log(unsubscribe())
-    return () => unsubscribe();
 
+    return () => unsubscribe();
   });
-  console.log("aqui2")
+
   return {
     subscribe,
   };
 }
 
 export const user = userStore();
+
+
+
+/**
+ * @param  {string} path document path or reference
+ * @param  {any} startWith optional default data
+ * @returns a store with realtime updates on document data
+ */
+export function docStore<T>(
+  path: string,
+) {
+  let unsubscribe: () => void;
+
+  const docRef = doc(db, path);
+
+  const { subscribe } = writable<T | null>(null, (set) => {
+    unsubscribe = onSnapshot(docRef, (snapshot) => {
+      set((snapshot.data() as T) ?? null);
+    });
+
+    return () => unsubscribe();
+  });
+
+  return {
+    subscribe,
+    ref: docRef,
+    id: docRef.id,
+  };
+}
+
+interface UserData {
+  username: string;
+  bio: string;
+  photoURL: string;
+  published: boolean;
+  links: any[];
+}
+
+export const userData: Readable<UserData | null> = derived(user, ($user, set) => { 
+  if ($user) {
+    return docStore<UserData>(`users/${$user.uid}`).subscribe(set);
+  } else {
+    set(null); 
+  }
+});  

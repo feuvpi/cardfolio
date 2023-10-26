@@ -1,6 +1,5 @@
 <script lang="ts">
     import { auth, user } from "$lib/firebase";
-	import { credential } from "firebase-admin";
     import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 
     async function signInWithGoogle(){
