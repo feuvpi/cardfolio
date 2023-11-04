@@ -76,7 +76,7 @@
     />
     </form>
 
-    <div className="my-4">
+    <div class="my-4">
         {#if loading}
             <p class="text-secondary text-sm">Checking availability of @{username}...</p>
         {/if}
