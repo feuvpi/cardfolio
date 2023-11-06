@@ -53,6 +53,8 @@ export const user = userStore();
 
 
 
+
+
 /**
  * @param  {string} path document path or reference
  * @param  {any} startWith optional default data
@@ -94,4 +96,13 @@ export const userData: Readable<UserData | null> = derived(user, ($user, set) =>
   } else {
     set(null); 
   }
-});  
+});
+
+user.subscribe((user) => {
+  if(user){
+    const docRef = doc(db, `users/${user.uid}`);
+    onSnapshot(docRef, (snapshot) => {
+      userData.set(snapshot.data());
+    })
+  }
+})
