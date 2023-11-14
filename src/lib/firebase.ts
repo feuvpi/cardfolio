@@ -98,11 +98,11 @@ export const userData: Readable<UserData | null> = derived(user, ($user, set) =>
   }
 });
 
-user.subscribe((user) => {
-  if(user){
-    const docRef = doc(db, `users/${user.uid}`);
-    onSnapshot(docRef, (snapshot) => {
-      userData.set(snapshot.data());
-    })
-  }
-})
+// user.subscribe((user) => {
+//   if(user){
+//     const docRef = doc(db, `users/${user.uid}`);
+//     onSnapshot(docRef, (snapshot) => {
+//       userData.set(snapshot.data());
+//     })
+//   }
+// })
