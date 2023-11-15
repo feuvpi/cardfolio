@@ -7,7 +7,20 @@
     let previewURL: string;
     let uploading = false;
 
-    async function upload(e: any) {}
+    async function upload(e: any) {
+        uploading = true;
+        const file = e.target.files[0]
+        previewURL = URL.createObjectURL(file);
+
+        // -- upload to firebase
+        const storageRef = ref(storage, `users/${$user!.uid}/profile.png`);
+        const result = await uploadBytes(storageRef, file)
+
+        // -- store the download url in the firestore in user document
+        const url = await getDownloadURL(result.ref);
+        await updateDoc(doc(db, "users", $user!.uid), { photoURL: url});
+        uploading = false;
+    }
 
 </script>
 
@@ -26,6 +39,7 @@
             <span class="label-text">Choose a file</span>
         </label>
         <input 
+        on:change={upload}
         name="photoURL"
         type="file"
         class="file-input file-input-bordered w-full max-w-xs"
