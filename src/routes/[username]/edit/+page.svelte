@@ -1,0 +1,27 @@
+<script lang="ts">
+    import { userData } from '$lib/firebase';
+    import AuthCheck from "$lib/components/AuthCheck.svelte" // Importe o seu userData store aqui
+
+    let user = $userData;
+</script>
+
+<AuthCheck>
+
+    {#if $userData}
+    <!-- svelte-ignore a11y-img-redundant-alt -->
+    <img src={$userData.photoURL} alt="User Image" class="w-48 h-48 rounded-full object-cover mb-4">
+    <!-- Campo de entrada para o username -->
+    <input type="text" class="text-2xl font-bold border border-gray-300 rounded px-2 py-1 mb-4" bind:value={$userData.username}>
+
+    <!-- Campo de texto para mostrar userData.bio -->
+    <textarea class="border border-gray-300 rounded px-2 py-1" rows="4" bind:value={$userData.bio}></textarea>
+
+    <!-- Botão para adicionar link -->
+    <button class="mt-6 px-4 py-2 bg-blue-500 text-white rounded cursor-pointer">Add Link</button>
+    {:else}
+    <!-- Mostrar mensagem de erro -->
+    <p class="text-red-500">Error. Try again later..</p>
+  {/if}
+  
+
+</AuthCheck>
