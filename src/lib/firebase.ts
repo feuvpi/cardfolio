@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { initializeApp } from 'firebase/app';
-import { doc, getFirestore, onSnapshot } from "firebase/firestore";
+import { collection, doc, getFirestore, onSnapshot, query, where } from "firebase/firestore";
 import { getAuth, onAuthStateChanged, type User } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 import { writable, type Readable, derived } from "svelte/store";
@@ -20,6 +21,23 @@ export const app = initializeApp(firebaseConfig);
 export const db = getFirestore();
 export const auth = getAuth();
 export const storage = getStorage();
+
+// -- interfaces
+
+interface UserData {
+  username: string;
+  bio: string;
+  photoURL: string;
+  published: boolean;
+  links: any[];
+}
+
+interface ProjectData {
+  title: string;
+  description: string;
+  tags: string[];
+  pictures: File[];
+}
 
 
 /**
@@ -51,10 +69,6 @@ function userStore() {
 
 export const user = userStore();
 
-
-
-
-
 /**
  * @param  {string} path document path or reference
  * @param  {any} startWith optional default data
@@ -82,13 +96,7 @@ export function docStore<T>(
   };
 }
 
-interface UserData {
-  username: string;
-  bio: string;
-  photoURL: string;
-  published: boolean;
-  links: any[];
-}
+
 
 export const userData: Readable<UserData | null> = derived(user, ($user, set) => { 
   if ($user) {
@@ -98,11 +106,26 @@ export const userData: Readable<UserData | null> = derived(user, ($user, set) =>
   }
 });
 
-// user.subscribe((user) => {
-//   if(user){
-//     const docRef = doc(db, `users/${user.uid}`);
-//     onSnapshot(docRef, (snapshot) => {
-//       userData.set(snapshot.data());
-//     })
-//   }
-// })
+export const projectData: Readable<ProjectData[] | null> = derived(user, ($user, set) => {
+  let unsubscribe: () => void;
+
+  if ($user) {
+    const projectsRef = collection(db, 'projects');
+    const q = query(projectsRef, where('userID', '==', $user.uid));
+
+    const { subscribe } = writable<ProjectData[] | null>(null, (set) => {
+      unsubscribe = onSnapshot(q, (snapshot) => {
+        const projects: ProjectData[] = [];
+        snapshot.forEach((doc) => {
+          projects.push(doc.data() as ProjectData);
+        });
+        set(projects);
+      });
+    });
+
+    return () => unsubscribe();
+  } else {
+    set(null);
+  }
+});
+

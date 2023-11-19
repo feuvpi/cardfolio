@@ -1,5 +1,6 @@
 <script>
-    import { userData } from '$lib/firebase';
+    export let username = "";
+    export let photoURL = "";
 </script>
   
   <nav class="grid place-items-center pt-12 md:pt-20 pb-6 md:pb-12">
@@ -8,14 +9,14 @@
         class="border rounded-full border-4 hover:border-orange-600 hover:bg-orange-200 duration-300"
       >
         <img
-          class="rounded-full h-20 w-20 shadow-xl"
-          src="$userData.photoURL"
+          class="rounded-full h-32 w-32 shadow-xl"
+          src={photoURL}
           alt="profile"
         />
       </button>
     </a>
   
     <h1 class="font-bold text-3xl md:text-5xl my-5">
-      @{$userData?.username.slice(0, Math.round($userData?.username.length/2))} <span class="text-brand font-black">@{$userData?.username.slice(Math.round($userData?.username.length/2))}</span>.
+      {username.slice(0, Math.round(username.length/2))}<span class="text-brand text-indigo-700">{username.slice(Math.round(username.length/2))}</span>
     </h1>
   </nav>
