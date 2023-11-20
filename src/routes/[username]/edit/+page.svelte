@@ -8,6 +8,18 @@
 <AuthCheck>
 
     {#if $userData}
+    <div class="">
+      <p class="leading-relaxed">
+        @{$userData.bio}
+      </p>
+
+    </div>
+
+
+
+
+
+
     <!-- svelte-ignore a11y-img-redundant-alt -->
     <img src={$userData.photoURL} alt="User Image" class="w-48 h-48 rounded-full object-cover mb-4">
     <!-- Campo de entrada para o username -->
