@@ -1,0 +1,61 @@
+<script lang="ts">
+
+import { flip } from "svelte/animate";
+import { createEventDispatcher } from "svelte";
+
+export let list: any[];
+let isOver: string | boolean = false;
+
+const dispatch = createEventDispatcher();
+
+const reorder = ({ from, to }: any) => {
+    const newList = [...list];
+    newList[from] = [newList[to], (newList[to] = newList[from])][0];
+    dispatch("sort", newList)
+}
+
+// -- gets the element beign drag
+function getDraggedParent(node: any){
+    if(!node.dataset.index){
+        return getDraggedParent(node.parentNode);
+    } else {
+        return { ...node.dataset };
+    }
+}
+
+function onDragStart(e: DragEvent){
+    // @ts-ignore
+    const dragged = getDraggedParent(e.target);
+    e.dataTransfer?.setData("source", dragged?.index.toString());
+}
+
+</script>
+
+
+{#if list?.length}
+<ul class="">
+    {#each list as item, index (item.id)}
+    <li 
+    class=""
+    class:over={item.id === isOver}
+    data-index={index}
+    data-id={item.id}
+    draggable="true"
+    on:dragstart={onDragStart}
+    on:dragover|preventDefault={onDragOver}
+    on:dragleave={onDragLeave}
+    on:drop|preventDefault={onDrop}
+    animate:filp={{ duration: 300 }}
+    ><slot {item} {index}/></li>
+    {/each}
+</ul>
+{:else}
+<p class="">No links.</p>
+{/if}
+
+<style>
+.over{
+
+}
+
+</style>
