@@ -41,6 +41,15 @@ function onDragLeave(e: DragEvent){
     isOver === dragged.id && (isOver = false);
 }
 
+function onDrop(e: DragEvent){
+    isOver = false;
+    const dragged = getDraggedParent(e.target);
+    reorder({
+        from: e.dataTransfer?.getData("source"),
+        to: dragged.index,
+    })
+}
+
 </script>
 
 
@@ -57,7 +66,7 @@ function onDragLeave(e: DragEvent){
     on:dragover|preventDefault={onDragOver}
     on:dragleave={onDragLeave}
     on:drop|preventDefault={onDrop}
-    animate:filp={{ duration: 300 }}
+    animate:flip={{ duration: 300 }}
     ><slot {item} {index}/></li>
     {/each}
 </ul>
