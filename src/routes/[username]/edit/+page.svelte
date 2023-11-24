@@ -8,7 +8,7 @@
 
 <AuthCheck>
 
-    {#if $userData}
+  {#if $userData}
     {#if $userData.username == $page.params.username}
    
 
