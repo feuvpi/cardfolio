@@ -1,10 +1,51 @@
+<!-- svelte-ignore missing-declaration -->
+<!-- svelte-ignore missing-declaration -->
 <script lang="ts">
-    import { page } from "$app/stores";
-    import { userData } from '$lib/firebase';
-    import AuthCheck from "$lib/components/AuthCheck.svelte" // Importe o seu userData store aqui
+  import { page } from "$app/stores";
+  import { db, user, userData } from "$lib/firebase";
+  import AuthCheck from "$lib/components/AuthCheck.svelte" // Importe o seu userData store aqui
+	import { arrayUnion, doc, updateDoc, setDoc, arrayRemove } from "firebase/firestore";
+  import SortableList from "$lib/components/SortableList.svelte";
+  import UserLink from "$lib/components/UserLink.svelte";
+  import { writable } from "svelte/store"
 
-    let user = $userData;
+  const icons = [
+    "X",
+    "Youtube",
+    "TikTok",
+    "LinkedIn",
+    "Github",
+    "Custom" 
+];
+
+const formDefaults = {
+  icon: "custom",
+  tittle: "",
+  url: "https://"
+}
+
+const formData = writable(formDefaults)
+let showForm = false;
+
+
+
+
+    // let user = $userData;
+
+    async function addLink(e: SubmitEvent){
+      const userRef = doc(db, "users", $user!.uid)
+      await updateDoc(userRef, {
+        links: arrayUnion({
+          ...$formData,
+          id: Date.now().toString(),
+        }),
+      });
+      formData.set({
+        icon: "",
+      })
+    }
 </script>
+
 
 <AuthCheck>
 

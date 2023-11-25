@@ -5,6 +5,11 @@
     export let data: PageData;
 </script>
 
+<svelte:head>
+    <title>@{data.username} Info</title>
+    <meta name="description" content={data.bio}/>
+</svelte:head>
+
 <Heading username={data.username} photoURL={data.photoURL}/>
 <div class="grid place-items-center w-56">
     <p class="leading-relaxed">@{data.bio}</p>
