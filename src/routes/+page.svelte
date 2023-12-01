@@ -1,4 +1,10 @@
+
+<script>
+      import Heading from "$lib/components/HeadingLanding.svelte"
+</script>
+
 <section class="bg-gray-900 text-white">
+  <Heading/>
     <div
       class="mx-auto max-w-screen-xl px-4 py-32 lg:flex lg:h-screen lg:items-center"
     >
