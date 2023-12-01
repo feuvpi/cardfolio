@@ -1,3 +1,16 @@
+<script>
+      import { auth, userData } from "$lib/firebase";
+      import { signOut } from "firebase/auth";
+      import { goto } from '$app/navigation'
+
+   async function signOutSSR() {
+    const res = await fetch("/api/signin", { method: "DELETE" });
+    await signOut(auth);
+    goto(`/`);
+  }
+
+</script>
+
 <div class="flex h-screen w-16 flex-col justify-between border-0 bg-stone-500 bg-opacity-70">
     <div>
       <!-- <div class="inline-flex h-16 w-16 items-center justify-center">
@@ -161,9 +174,9 @@
     </div>
   
     <div class="sticky inset-x-0 bottom-0 bg-stone-500 bg-opacity-70 p-2">
-      <form action="/logout">
+
         <button
-          type="submit"
+        on:click={signOutSSR}
           class="group relative flex w-full justify-center rounded-lg px-2 py-1.5 text-sm text-gray-500 hover:bg-stone-300 hover:text-gray-700"
         >
           <svg
@@ -187,6 +200,6 @@
             Logout
           </span>
         </button>
-      </form>
+
     </div>
   </div>
