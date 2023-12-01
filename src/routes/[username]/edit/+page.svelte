@@ -9,6 +9,7 @@
   import UserLink from "$lib/components/UserLink.svelte";
   import { writable } from "svelte/store"
 
+ 
   const icons = [
     "X",
     "Youtube",
@@ -49,7 +50,7 @@ let showForm = false;
 
 <AuthCheck>
 
-  {#if $userData}
+  {#if $userData }
     {#if $userData.username == $page.params.username}
    
 
