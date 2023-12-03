@@ -1,7 +1,7 @@
 <script >
     
     import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
-    import { auth, user, userData } from "$lib/firebase";
+    import { auth, userData } from "$lib/firebase";
     import { goto } from '$app/navigation'
     
     $: {
