@@ -3,7 +3,8 @@
     import AuthCheck from "$lib/components/AuthCheck.svelte"
     import { db, user, userData } from "$lib/firebase";
     import { collection, deleteDoc, doc, getDoc, getDocs, query, where, writeBatch } from "firebase/firestore"
-    import type { Unsubscribe } from 'firebase/firestore'; 
+    import type { Unsubscribe } from 'firebase/firestore';
+    import { goto } from '$app/navigation' 
 	//import { database } from 'firebase-admin';
 
     let username = "";
@@ -97,6 +98,15 @@ onMount(() => {
 onDestroy(() => {
     userDataUnsubscribe();
 })
+
+$: {
+    if ($userData && $userData.username) {
+
+      goto(`/${$userData.username}/edit`);
+    } else if ($userData) {
+        goto('/login/username');
+    }
+}
     
 </script>
 
