@@ -21,40 +21,68 @@
 
 const formDefaults = {
   icon: "custom",
-  tittle: "",
+  title: "",
   url: "https://"
 }
 
 const formData = writable(formDefaults)
 let showForm = false;
 
+$: urlIsValid = $formData.url.match(/^(ftp|http|https|):\/\/[^ "]+$/);
+$: titleIsValid = $formData.title.length < 20 && $formData.title.length > 0;
+$: formIsValid = urlIsValid && titleIsValid;
 
-
-
-    // let user = $userData;
+    function sortList(e: CustomEvent){
+      const newList = e.detail;
+      const userRef = doc(db, "users", $user!.uid);
+      setDoc(userRef, { links: newList }, { merge: true })
+    }
 
     async function addLink(e: SubmitEvent){
-      const userRef = doc(db, "users", $user!.uid)
+      const userRef = doc(db, "users", $user!.uid);
+
       await updateDoc(userRef, {
         links: arrayUnion({
           ...$formData,
           id: Date.now().toString(),
         }),
       });
+
       formData.set({
         icon: "",
-      })
+        title: "",
+        url: "",
+      });
+
+      showForm = false;
+    }
+
+    async function deleteLink(item: any){
+      const userRef = doc(db, "users", $user!.uid);
+      await updateDoc(userRef, {
+        links: arrayRemove(item),
+      });
+    }
+
+    async function toggleProfileStatus(item: any){
+      const userRef = doc(db, "users", $user!.uid);
+      await updateDoc(userRef, {
+        published: !$userData?.published,
+      });
+    }
+
+    function cancelLink(){
+      formData.set(formDefaults)
+      showForm = false;
     }
 </script>
 
 
 <AuthCheck>
 
-  {#if $userData }
-    {#if $userData.username == $page.params.username}
+  <!-- {#if $userData } -->
+    {#if $userData?.username == $page.params.username}
    
-
-
 <div class="grid-col-1 align-center">
 
     <div class="flex justify-center">
@@ -85,11 +113,10 @@ let showForm = false;
     {:else}
     <p class="text-red-500">You're not authorized.</p>
     {/if}
-    {:else}
+
     <!-- Mostrar mensagem de erro -->
     <p class="text-red-500">Error. Try again later..</p>
    
-  {/if}
   
 
 </AuthCheck>
