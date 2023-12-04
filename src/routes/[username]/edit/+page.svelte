@@ -1,10 +1,9 @@
 <!-- svelte-ignore missing-declaration -->
 <!-- svelte-ignore missing-declaration -->
 <script lang="ts">
-  import { page } from "$app/stores";
-  import { db, user, userData } from "$lib/firebase";
-  import AuthCheck from "$lib/components/AuthCheck.svelte" // Importe o seu userData store aqui
-	import { arrayUnion, doc, updateDoc, setDoc, arrayRemove } from "firebase/firestore";
+    import { page } from "$app/stores";
+    import { db, user, userData } from "$lib/firebase";
+import { arrayUnion, doc, updateDoc, setDoc, arrayRemove } from "firebase/firestore";
   import SortableList from "$lib/components/SortableList.svelte";
   import UserLink from "$lib/components/UserLink.svelte";
   import { writable } from "svelte/store"
@@ -78,11 +77,10 @@ $: formIsValid = urlIsValid && titleIsValid;
 </script>
 
 
-<AuthCheck>
 
-  <!-- {#if $userData } -->
+    <!-- {#if $userData } -->
     {#if $userData?.username == $page.params.username}
-   
+   <h1 class="mx-2 text-2xl font-mono font-bold mt-8 mb-4 text-center">Edit your page</h1>
 <div class="grid-col-1 align-center">
 
     <div class="flex justify-center">
@@ -113,10 +111,8 @@ $: formIsValid = urlIsValid && titleIsValid;
     {:else}
     <p class="text-red-500">You're not authorized.</p>
     {/if}
-
+    
     <!-- Mostrar mensagem de erro -->
     <p class="text-red-500">Error. Try again later..</p>
    
   
-
-</AuthCheck>
