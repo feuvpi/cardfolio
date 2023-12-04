@@ -1,6 +1,7 @@
 <script lang="ts">
-    import { auth, user } from "$lib/firebase";
+    import { auth, user, userData } from "$lib/firebase";
     import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
+    import { goto } from '$app/navigation' 
 
     async function signInWithGoogle(){
         const provider = new GoogleAuthProvider();
@@ -20,10 +21,20 @@
     await signOut(auth);
   }
 
+  $: {
+    if ($userData && $userData.username) {
+
+      goto(`/${$userData.username}/edit`);
+    } else if ($userData) {
+        goto('/login/username');
+    }
+}
+
 </script>
 
 <h2>Welcome!</h2>
 {#if $user}
+
     <h2 class="title">Welcome! {$user.displayName}</h2>
     <p class="text-center text-success">You are in.</p>
     <button  class="btn btn-warning" on:click={signOutSSR}>Sign Out</button>
