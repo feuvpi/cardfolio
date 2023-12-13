@@ -80,12 +80,8 @@ $: formIsValid = urlIsValid && titleIsValid;
 
     <!-- {#if $userData } -->
     {#if $userData?.username == $page.params.username}
-<<<<<<< HEAD
    
 
-=======
-   <h1 class="mx-2 text-2xl font-mono font-bold mt-8 mb-4 text-center">Edit your page</h1>
->>>>>>> 3bbfc9115f9ea4e73352a6b675f3825a46ced4c7
 <div class="grid-col-1 align-center">
 
     <div class="flex justify-center">
@@ -94,30 +90,27 @@ $: formIsValid = urlIsValid && titleIsValid;
   <img src={$userData.photoURL} alt="User Image" class="w-48 h-48 rounded-full object-cover mb-4 item-center align-middle">
     </div>
 
-  <!-- Campo de entrada para o username -->
-  <div class="mb-4">
-    <p class="leading-relaxed">
-      @{$userData.bio}
-    </p>
+    <!-- <div class="relative">
+      <input type="text" class="bg-slate-700 bg-opacity-50 text-sm font-mono text-center font-bold border-none rounded px-2 py-1 mb-4 w-full pl-8" bind:value={$userData.username}>
+      <span class="absolute py-1 mb-4 inset-y-0 left-2 flex items-center text-gray-500 text-sm font-mono font-bold pointer-events-none">
+          cardfolio.card/
+      </span>
+  </div> -->
 
-  </div>
-  <input type="text" class="text-2xl font-bold border border-gray-300 rounded px-2 py-1 mb-4" bind:value={$userData.username}>
-
-  <!-- Campo de texto para mostrar userData.bio -->
-  <textarea class="border border-gray-300 rounded px-2 py-1" rows="4" bind:value={$userData.bio}></textarea>
-
-  <!-- Botão para adicionar link -->
-  <button class="mt-6 px-4 py-2 bg-blue-500 text-white rounded cursor-pointer">Add Link</button>
+  <div class="flex items-center text-center bg-slate-700 bg-opacity-50 text-xl font-mono font-bold border-none rounded px-2 py-1 mb-4 w-full">
+    <span class="text-gray-500 font-mono text-sm ml-10">cardfolio.card/</span>
+    <input type="text" class="w-full bg-transparent focus:outline-none text-sm font-mono" bind:value={$userData.username}>
 </div>
 
 
-
-    
+  <!-- Campo de entrada para o username -->
+  <div class="mb-4">
+    <textarea class="border-none bg-slate-700 bg-opacity-50 w-full rounded px-2 py-1" rows="4" bind:value={$userData.bio}></textarea>
+  </div>
+</div>
     {:else}
     <p class="text-red-500">You're not authorized.</p>
     {/if}
     
-    <!-- Mostrar mensagem de erro -->
-    <p class="text-red-500">Error. Try again later..</p>
    
   
