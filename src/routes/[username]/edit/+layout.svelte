@@ -32,8 +32,8 @@
 		class="flex h-screen"
 	>
 	<Sidebar/>
-	<h1 class="mx-2 text-2xl font-mono font-bold mt-8 mb-4 text-center">Edit your page</h1>
-	<div class="flex items-center justify-center h-screen w-full">
+	<div class="items-center justify-center h-screen w-full">
+		<h1 class="text-center mt-8 mb-4 font-mono text-2xl">EDIT YOUR PAGE</h1>
 		<main class="max-w-sm mx-auto m-4 p-10 bg-slate-700 bg-opacity-50 rounded shadow-xl">
 			<slot />
 		</main>
@@ -41,12 +41,11 @@
 	</div>
 	{:else}
 	<div
-		style="background-image: url(https://images.unsplash.com/photo-1533135091724-62cc5402aa20?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);"
 		class="flex flex-col h-screen overflow-x-hidden"
 	>
 	<Navbar/>
 	<div class="items-center justify-center h-screen w-full">
-		<h1>teste</h1>
+		<h1 class="text-center mt-4 font-mono text-2xl">EDIT YOUR PAGE</h1>
 		<main class="max-w-sm m-4 p-10 bg-slate-700 bg-opacity-50 rounded shadow-xl">
 			<slot />
 		</main>
