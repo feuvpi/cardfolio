@@ -128,4 +128,3 @@ export const projectData: Readable<ProjectData[] | null> = derived(user, ($user,
     set(null);
   }
 });
-

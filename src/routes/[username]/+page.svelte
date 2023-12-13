@@ -1,28 +1,16 @@
 <script lang="ts">
     import type { PageData } from './$types';
     import Heading from "$lib/components/Heading.svelte"
-	import UserLink from '$lib/components/UserLink.svelte';
     
     export let data: PageData;
 </script>
-
-<svelte:head>
-    <title>@{data.username} Info</title>
-    <meta name="description" content={data.bio}/>
-</svelte:head>
 
 <Heading username={data.username} photoURL={data.photoURL}/>
 <div class="grid place-items-center w-56">
     <p class="leading-relaxed">@{data.bio}</p>
 </div>
-<ul class="">
-    {#each data.links as item}
-    <li>
-        <UserLink {...item}/>
-    </li>
-    {/each}
-</ul>
 <h2 class="text-3xl font-bold my-4">Articles</h2>
+
 
 
 

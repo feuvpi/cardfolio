@@ -4,7 +4,7 @@
 </script>
 
 <div
-style="background-image: url(https://images.unsplash.com/photo-1533135091724-62cc5402aa20?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);" 
+style="background-image: url(https://images.unsplash.com/photo-1533135091724-62cc5402aa20?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D); background-size: cover;" 
 class="flex flex-col justify-center items-center h-screen">
 
     <AnimatedRoute>
