@@ -30,7 +30,9 @@
 	class="flex h-screen"
 >
 <Sidebar/>
-<div class="flex items-center justify-center h-screen w-full">
+
+<div class="flex justify-center h-screen w-full">
+	
 	<main class="max-w-sm m-4 p-10 bg-slate-700 bg-opacity-50 rounded shadow-xl">
 		<slot />
 	</main>
