@@ -8,6 +8,31 @@ import { arrayUnion, doc, updateDoc, setDoc, arrayRemove } from "firebase/firest
   import UserLink from "$lib/components/UserLink.svelte";
   import { writable } from "svelte/store"
 
+  $: isValid = username?.length > 2 && username.length < 16 && re.test(username);
+	$: isTouched = username.length > 0;
+	$: isTaken = isValid && !isAvailable && !loading;
+	$: isConfirmed = false;
+
+  let username = '';
+  let loading = false;
+	let isAvailable = false;
+  let debounceTimer: NodeJS.Timeout;
+
+	async function checkAvailability() {
+		isAvailable = false;
+		clearTimeout(debounceTimer);
+		loading = true;
+		console.log(`checking if ${username} is available...`);
+
+		debounceTimer = setTimeout(async () => {
+			// -- reference to firestore documemt
+			const ref = doc(db, 'usernames', username);
+			const exists = await getDoc(ref).then((doc) => doc.exists());
+			isAvailable = !exists;
+			loading = false;
+		}, 500);
+	}
+
  
   const icons = [
     "X",
@@ -105,7 +130,7 @@ $: formIsValid = urlIsValid && titleIsValid;
 
   <!-- Campo de entrada para o username -->
   <div class="mb-4">
-    <textarea class="border-none bg-slate-700 bg-opacity-50 w-full rounded px-2 py-1" rows="4" bind:value={$userData.bio}></textarea>
+    <textarea class="border-none bg-slate-700 bg-opacity-50 w-full rounded px-2 py-1 font-mono" rows="4" bind:value={$userData.bio}></textarea>
   </div>
 </div>
     {:else}
