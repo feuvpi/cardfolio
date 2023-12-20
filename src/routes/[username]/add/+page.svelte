@@ -1,7 +1,89 @@
 <script lang="ts">
-    import type { PageData } from './$types';
-    
-    export let data: PageData;
+	import { user, userData, storage, db } from '$lib/firebase';
+  import type { PageData } from './$types';
+  import { getFirestore, doc, setDoc, writeBatch } from 'firebase/firestore'
+  import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage'
+  export let data: PageData;
+
+  let projectTitle = '';
+  let projectDescription = '';
+  let uploadedImages: any[] = [];
+  let tags: any[] = [];
+  let tagInput = ''; 
+  const batch = writeBatch(db);
+
+  // -- function to handle tag input
+  function handleTagInput(event: any){
+    if(event.key === ' '){
+      if(tagInput.trim() !== ''){
+        tags = [...tags, `#${tagInput.trim()}`];
+        tagInput = '';
+      }
+    }
+  }
+
+  // -- Function to handle image upload
+  function handleImageUpload(event: any) {
+    const files = event.target.files;
+    for (let i = 0; i < files.length; i++) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const imageData = {
+          url: reader.result,
+          alt: files[i].name,
+        };
+        uploadedImages = [...uploadedImages, imageData];
+      };
+      reader.readAsDataURL(files[i]);
+    }
+  }
+
+  // -- Function to remove uploaded image
+  function removeImage(index: number) {
+    uploadedImages = uploadedImages.filter((_, i) => i !== index);
+  }
+
+  // -- Function to submit the form
+  async function submitForm() {
+    const imageUrls = [];
+    for(const image of uploadedImages) {
+      const storageRef = ref(storage, `projects/${$user!.uid}/${projectTitle}/${image.alt}`);
+      const result = await uploadBytes(storageRef, image.file);
+      const downloadURL = await getDownloadURL(storageRef);
+      imageUrls.push(downloadURL);
+    }
+
+
+
+        //     // -- upload to firebase
+        //     const storageRef = ref(storage, `users/${$user!.uid}/profile.png`);
+        // const result = await uploadBytes(storageRef, file)
+
+
+
+    // -- create the object
+    const project = {
+      title: projectTitle,
+      description: projectDescription,
+      tags: tags,
+      imageUrls: imageUrls,
+      userId: $user!.uid
+    }
+
+    // -- save into the user firebase document
+    const projectRef = doc(db, 'projects');
+    await setDoc(projectRef, project)
+
+    // batch.set(doc(db, 'projects', $user!.uid), project);
+
+    resetForm();
+  }
+
+  function resetForm() {
+    projectTitle = '';
+    projectDescription = '';
+    uploadedImages = [];
+  }
 </script>
 
 <div class="container mx-auto py-8">
@@ -17,6 +99,23 @@
         <label for="projectDescription" class="block mb-2">Project Description</label>
         <textarea id="projectDescription" bind:value={projectDescription} class="textarea textarea-bordered w-full"></textarea>
       </div>
+
+      <div class="mb-4">
+        <label for="tags" class="block mb-2">Tags</label>
+        <input
+          type="text"
+          id="tags"
+          bind:value={tagInput}
+          placeholder="Add tags separated by spaces"
+          class="input input-bordered w-full mb-2"
+          on:keyup={handleTagInput}
+        />
+        <div class="flex flex-wrap">
+          {#each tags as tag, index}
+            <span class="bg-gray-200 px-2 py-1 rounded-full text-sm mr-2 mb-2">{tag}</span>
+          {/each}
+        </div>
+      </div>
   
       <div class="mb-4">
         <label for="imageUpload" class="block mb-2">Upload Images</label>
@@ -26,13 +125,13 @@
       <div class="flex flex-wrap -mx-2 mb-4">
         {#each uploadedImages as image, index}
           <div class="w-1/2 sm:w-1/4 md:w-1/6 px-2 mb-2">
-            <div class="relative">
+            <div class="relative h-20">
               <button class="absolute top-0 right-0 p-1 bg-red-500 text-white rounded-full" on:click={() => removeImage(index)}>
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
               </button>
-              <img src={image.url} alt={image.alt} class="w-full h-auto" />
+              <img src={image.url} alt={image.alt} class="object-cover w-full h-full" />
             </div>
           </div>
         {/each}

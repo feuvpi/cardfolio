@@ -3,7 +3,7 @@
 <script lang="ts">
     import { page } from "$app/stores";
     import { db, user, userData } from "$lib/firebase";
-import { arrayUnion, doc, updateDoc, setDoc, arrayRemove } from "firebase/firestore";
+import { arrayUnion, doc, updateDoc, setDoc, arrayRemove, getDoc } from "firebase/firestore";
   import SortableList from "$lib/components/SortableList.svelte";
   import UserLink from "$lib/components/UserLink.svelte";
   import { writable } from "svelte/store"
@@ -17,6 +17,7 @@ import { arrayUnion, doc, updateDoc, setDoc, arrayRemove } from "firebase/firest
   let loading = false;
 	let isAvailable = false;
   let debounceTimer: NodeJS.Timeout;
+  const re = /^(?=[a-zA-Z0-9._]{3,16}$)(?!.*[_.]{2})[^_.].*[^_.]$/;
 
 	async function checkAvailability() {
 		isAvailable = false;
@@ -132,6 +133,17 @@ $: formIsValid = urlIsValid && titleIsValid;
   <div class="mb-4">
     <textarea class="border-none bg-slate-700 bg-opacity-50 w-full rounded px-2 py-1 font-mono" rows="4" bind:value={$userData.bio}></textarea>
   </div>
+
+
+<SortableList list={$userData?.links} on:sort={sortList} let:item let:index>
+
+<div class="group relative">
+  <UserLink {...item}/>
+  <button on:click={() => deleteLink(item)} class="btn btn-xs btn-error invisible group-hover:visible transition-all absolute -right-6 bottom-10">Delete</button>
+</div>
+</SortableList>
+
+
 </div>
     {:else}
     <p class="text-red-500">You're not authorized.</p>
