@@ -4,11 +4,11 @@
     export let data: PageData;
 
      // Define props to receive project details
-  export let projectTitle;
-  export let projectDescription;
-  export let projectImages;
+  export let projectTitle: any;
+  export let projectDescription: any;
+  export let projectImages: any;
 
-  function openImageModal(imageUrl) {
+  function openImageModal(imageUrl: any) {
       // Implement logic to showcase the image in a larger view
       // This can be achieved through a modal or a lightbox effect
       // Display the clicked image in a larger size
