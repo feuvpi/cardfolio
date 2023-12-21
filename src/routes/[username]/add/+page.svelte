@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { user, userData, storage, db } from '$lib/firebase';
+	import { user, storage, db } from '$lib/firebase';
   import type { PageData } from './$types';
   import { getFirestore, doc, setDoc, writeBatch } from 'firebase/firestore'
-  import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage'
+  import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
   export let data: PageData;
 
   let projectTitle = '';
@@ -52,14 +52,6 @@
       const downloadURL = await getDownloadURL(storageRef);
       imageUrls.push(downloadURL);
     }
-
-
-
-        //     // -- upload to firebase
-        //     const storageRef = ref(storage, `users/${$user!.uid}/profile.png`);
-        // const result = await uploadBytes(storageRef, file)
-
-
 
     // -- create the object
     const project = {
