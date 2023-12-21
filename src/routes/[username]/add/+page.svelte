@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { user, storage, db } from '$lib/firebase';
   import type { PageData } from './$types';
-  import { getFirestore, doc, setDoc, writeBatch } from 'firebase/firestore'
+  import { writeBatch, collection, addDoc } from 'firebase/firestore'
   import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
   export let data: PageData;
 
@@ -11,6 +11,7 @@
   let tags: any[] = [];
   let tagInput = ''; 
   const batch = writeBatch(db);
+  let showMessage = false;
 
   // -- function to handle tag input
   function handleTagInput(event: any){
@@ -63,8 +64,17 @@
     }
 
     // -- save into the user firebase document
-    const projectRef = doc(db, 'projects');
-    await setDoc(projectRef, project)
+    const userProjectRef = collection(db, `users/${$user!.uid}/projects`);
+    try{
+      await addDoc(userProjectRef, project)
+      showMessage = true
+      setTimeout(() => {
+        showMessage = false;
+      }, 5000)
+    } catch (error) {
+      console.error('Error saving new project: ', error)
+    }
+    
 
     // batch.set(doc(db, 'projects', $user!.uid), project);
 
@@ -130,6 +140,9 @@
       </div>
   
       <button type="submit" class="btn btn-primary w-full">Submit</button>
+        {#if showMessage}
+    <p class="text-center text-green-500">Project saved successfully!</p>
+        {/if}
     </form>
   </div>
   
