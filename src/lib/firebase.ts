@@ -30,13 +30,14 @@ interface UserData {
   photoURL: string;
   published: boolean;
   links: any[];
+  projects: ProjectData[];
 }
 
 interface ProjectData {
   title: string;
   description: string;
   tags: string[];
-  pictures: File[];
+  imagesUrls: string[];
 }
 
 
