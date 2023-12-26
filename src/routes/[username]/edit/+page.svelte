@@ -83,10 +83,11 @@ $: formIsValid = urlIsValid && titleIsValid;
     }
 
     async function deleteLink(item: any){
-      const userRef = doc(db, "users", $user!.uid);
-      await updateDoc(userRef, {
-        links: arrayRemove(item),
-      });
+      // const userRef = doc(db, "users", $user!.uid);
+      // await updateDoc(userRef, {
+      //   links: arrayRemove(item),
+      // });
+      console.log($userData)
     }
 
     async function toggleProfileStatus(item: any){
@@ -135,10 +136,10 @@ $: formIsValid = urlIsValid && titleIsValid;
   </div>
 
 
-<SortableList list={$userData?.links} on:sort={sortList} let:item let:index>
+<SortableList list={$userData?.projects} on:sort={sortList} let:item let:index>
 
 <div class="group relative">
-  <UserLink {...item}/>
+  <UserLink {...item} imagesUrls={item.imagesUrls}/>
   <button on:click={() => deleteLink(item)} class="btn btn-xs btn-error invisible group-hover:visible transition-all absolute -right-6 bottom-10">Delete</button>
 </div>
 </SortableList>

@@ -141,11 +141,11 @@
   
       <button type="submit" class="btn btn-primary w-full">Submit</button>
         {#if showMessage}
-    <p class="text-center text-green-500">Project saved successfully!</p>
+    <p class="text-center text-green-500" >Project saved successfully!</p>
         {/if}
     </form>
   </div>
   
   <style>
-    /* Tailwind classes or custom styles can be added here */
+
   </style>
