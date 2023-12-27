@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { initializeApp } from 'firebase/app';
-import { collection, doc, getFirestore, onSnapshot, query, where } from "firebase/firestore";
+import { CollectionReference, collection, doc, getFirestore, onSnapshot, query, where } from "firebase/firestore";
 import { getAuth, onAuthStateChanged, type User } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 import { writable, type Readable, derived } from "svelte/store";
@@ -101,7 +101,30 @@ export function docStore<T>(
 
 export const userData: Readable<UserData | null> = derived(user, ($user, set) => { 
   if ($user) {
-    return docStore<UserData>(`users/${$user.uid}`).subscribe(set);
+    const userDocRef = doc(db, `users/${$user.uid}`);
+    const projectsCollectionRef = collection(userDocRef, 'projects');
+
+    const unsubscribe = onSnapshot(projectsCollectionRef, (snapshot) => {
+      const projectsData: ProjectData[] = [];
+      
+      snapshot.forEach((doc) => {
+        projectsData.push(doc.data() as ProjectData);
+      });
+
+      const userData: UserData = {
+        // Aqui, você pode incluir outros dados do usuário, se necessário
+        username: $user.username,
+        bio: $user.bio,
+        photoURL: $user.photoURL,
+        published: $user.published,
+        links: $user.links,
+        projects: projectsData, // Definindo os dados da subcoleção projects
+      };
+
+      set(userData);
+    })
+
+    //return docStore<UserData>(`users/${$user.uid}`).subscribe(set);
   } else {
     set(null); 
   }
