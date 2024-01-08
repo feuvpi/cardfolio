@@ -34,10 +34,12 @@ interface UserData {
 }
 
 interface ProjectData {
+  id: string; // Adicionar um campo 'id' para o identificador único
   title: string;
   description: string;
   tags: string[];
-  imagesUrls: string[];
+  imageUrls: string[];
+  userId: string;
 }
 
 
@@ -115,8 +117,9 @@ export const userData: Readable<UserData | null> = derived(user, ($user, set) =>
             const projectData = projectDoc.data() as ProjectData;
             userData.projects.push(projectData);
           });
-
+          
           set(userData);
+          console.log(userData.projects)
         });
       } else {
         set(null);
