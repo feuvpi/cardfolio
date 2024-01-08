@@ -1,20 +1,26 @@
 <script lang='ts'>
+	import Page from "../../routes/+page.svelte";
+
     export let icon = 'default';
     export let title = '';
     export let username = '';
     export let url = `cardfolio.card/${username}/${title}`
 
-    let imagesUrls: string[] = [];
+    export let imageUrls: string[] = [];
 
 
     // Get the first image URL from the array
-    let firstImageUrl = imagesUrls.length > 0 ? imagesUrls[0] : '';
+    let firstImageUrl = imageUrls.length > 0 ? imageUrls[0] : '/${default}.png';
 </script>
 
-<a href={url} class="stack w-full max-w-md text-center bg-base-300 flex justify-center items-center p-4 rounded-md not-prose font-mono no-underline">
-    <img src={`/${icon}.png`} alt={icon} width="32" height="32" class="w-8"/>
+<a href={url} class="mt-2 stack w-full max-w-md text-center bg-base-300 flex justify-center items-center p-2 rounded-md not-prose font-mono no-underline">
+    <img src={firstImageUrl} alt={icon} width="48" height="48" class="w-12 rounded-md"/>
     <span class="font-mono text-lg text-white font-bold">{title}</span>
 </a>
+
+
+
+
 
 
 

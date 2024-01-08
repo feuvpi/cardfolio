@@ -1,19 +1,19 @@
 <!-- svelte-ignore missing-declaration -->
 <!-- svelte-ignore missing-declaration -->
 <script lang="ts">
-    import { page } from "$app/stores";
-    import { db, user, userData } from "$lib/firebase";
-import { arrayUnion, doc, updateDoc, setDoc, arrayRemove, getDoc } from "firebase/firestore";
+  import { page } from "$app/stores";
+  import { db, user, userData } from "$lib/firebase";
+  import { arrayUnion, doc, updateDoc, setDoc, arrayRemove, getDoc } from "firebase/firestore";
   import SortableList from "$lib/components/SortableList.svelte";
   import UserLink from "$lib/components/UserLink.svelte";
-  import { writable } from "svelte/store"
+  import { writable } from "svelte/store";
 
   $: isValid = username?.length > 2 && username.length < 16 && re.test(username);
 	$: isTouched = username.length > 0;
 	$: isTaken = isValid && !isAvailable && !loading;
 	$: isConfirmed = false;
 
-  let username = '';
+  let username = $userData!.username;
   let loading = false;
 	let isAvailable = false;
   let debounceTimer: NodeJS.Timeout;
@@ -87,7 +87,7 @@ $: formIsValid = urlIsValid && titleIsValid;
       // await updateDoc(userRef, {
       //   links: arrayRemove(item),
       // });
-      console.log($userData)
+      //console.log($userData)
     }
 
     async function toggleProfileStatus(item: any){
@@ -101,6 +101,36 @@ $: formIsValid = urlIsValid && titleIsValid;
       formData.set(formDefaults)
       showForm = false;
     }
+
+    function consoleCheck(){
+      console.log($userData?.projects[0].imageUrls[0]);
+    }
+
+
+    async function salvarDadosUsuario() {
+  const userRef = doc(db, "users", $user!.uid);
+
+  try {
+    // Atualiza os dados do usuário
+    await updateDoc(userRef, {
+      username: $userData?.username,
+      bio: $userData?.bio,
+      // Adicione outros campos que você deseja atualizar
+    });
+
+    // Atualiza os links/projects do usuário
+    const novosLinks = $userData?.projects.map((projeto: any) => ({
+      ...projeto,
+      // Adicione campos específicos do projeto que precisam ser atualizados, se houver
+    }));
+
+    await setDoc(userRef, { projects: novosLinks }, { merge: true });
+
+    console.log("Dados do usuário atualizados com sucesso!");
+  } catch (error) {
+    console.error("Erro ao atualizar os dados do usuário:", error);
+  }
+}
 </script>
 
 
@@ -124,15 +154,35 @@ $: formIsValid = urlIsValid && titleIsValid;
       </span>
   </div> -->
 
-  <div class="flex items-center text-center bg-slate-700 bg-opacity-50 text-xl font-mono font-bold border-none rounded px-2 py-1 mb-4 w-full">
+  <div class="flex items-center text-center bg-slate-700 bg-opacity-50 text-xl font-mono font-bold border-none rounded px-2 py-1 mb-1 w-full">
     <span class="text-gray-500 font-mono text-sm ml-10">cardfolio.card/</span>
-    <input type="text" class="w-full bg-transparent focus:outline-none text-sm font-mono" bind:value={$userData.username}>
+    <input type="text" class="w-full bg-transparent focus:outline-none text-sm font-mono" 
+    bind:value={username}
+    on:input={checkAvailability}
+			class:input-error={(!isValid && isTouched) || isTouched}
+			class:input-warning={isTaken}
+			class:input-success={isAvailable && isValid && !loading}>
 </div>
+    {#if loading}
+			<p class="text-secondary text-sm">Checking availability of @{username}...</p>
+		{/if}
 
+		{#if !isValid && isTouched}
+			<p class="text-error text-sm">Username must be 3-16 alphanumeric characters.</p>
+		{/if}
 
+		{#if isValid && !isAvailable && !loading && !$userData?.username}
+			<p class="text-warning text-sm">@{username} is not available.</p>
+		{/if}
+    {#if isValid && isAvailable && !loading && !isConfirmed}
+    <p class="text-success text-sm">@{username} is available.</p>
+    {/if}
+<button on:click={() => consoleCheck()} class="btn btn-xs btn-error group-hover:visible transition-all">console</button>
+<p>teste</p>
   <!-- Campo de entrada para o username -->
   <div class="mb-4">
     <textarea class="border-none bg-slate-700 bg-opacity-50 w-full rounded px-2 py-1 font-mono" rows="4" bind:value={$userData.bio}></textarea>
+
   </div>
 
 
@@ -143,6 +193,20 @@ $: formIsValid = urlIsValid && titleIsValid;
   <button on:click={() => deleteLink(item)} class="btn btn-xs btn-error invisible group-hover:visible transition-all absolute -right-6 bottom-10">Delete</button>
 </div>
 </SortableList>
+
+
+{#if isValid && isAvailable && !loading && !isConfirmed}
+<div class="place-content-center flex">
+
+  <button type="button" on:click={salvarDadosUsuario} class="mt-4 flex mr-4 items-center place-self-center place-content-center rounded-full bg-indigo-700 w-24 font-mono">
+Save
+  </button>
+
+</div>
+{/if}
+
+
+
 
 
 </div>

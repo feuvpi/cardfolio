@@ -1,3 +1,5 @@
+<!-- svelte-ignore missing-declaration -->
+<!-- svelte-ignore missing-declaration -->
 <script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
 	import AuthCheck from '$lib/components/AuthCheck.svelte';

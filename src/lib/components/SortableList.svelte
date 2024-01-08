@@ -3,23 +3,33 @@
 import { flip } from "svelte/animate";
 import { createEventDispatcher } from "svelte";
 
+interface Item {
+    id: string;
+    index: number;
+    [key: string]: any;
+  }
+
 export let list: any[];
 let isOver: string | boolean = false;
 
 const dispatch = createEventDispatcher();
 
 const reorder = ({ from, to }: any) => {
-    const newList = [...list];
-    newList[from] = [newList[to], (newList[to] = newList[from])][0];
-    dispatch("sort", newList)
-}
+  const newList = [...list];
+  const temp = newList[from]; // Armazena temporariamente o valor de 'from'
+  newList[from] = newList[to]; // Substitui o valor de 'from' pelo valor de 'to'
+  newList[to] = temp; // Coloca o valor armazenado temporariamente na posição 'to'
+
+  dispatch("sort", newList);
+  list = newList;
+};
 
 // -- gets the element beign drag
 function getDraggedParent(node: any){
     if(!node.dataset.index){
         return getDraggedParent(node.parentNode);
     } else {
-        return { ...node.dataset };
+        return { ...node.dataset } as Item;
     }
 }
 
@@ -31,7 +41,7 @@ function onDragStart(e: DragEvent){
 
 function onDragOver(e: DragEvent){
     //@ts-ignore
-    const id = e.target.dataset?.id;
+    // const id = e.target.dataset?.id;
     const dragged = getDraggedParent(e.target);
     isOver = dragged?.id ?? false;
 }
@@ -45,8 +55,8 @@ function onDrop(e: DragEvent){
     isOver = false;
     const dragged = getDraggedParent(e.target);
     reorder({
-        from: e.dataTransfer?.getData("source"),
-        to: dragged.index,
+        from: Number(e.dataTransfer?.getData("source")),
+        to: Number(dragged.index),
     })
 }
 
@@ -57,7 +67,7 @@ function onDrop(e: DragEvent){
 <ul class="">
     {#each list as item, index (item.id)}
     <li 
-    class=""
+    class="border-2 border-dashed border-transparent transition-all max-w-md w-full"
     class:over={item.id === isOver}
     data-index={index}
     data-id={item.id}
@@ -75,8 +85,8 @@ function onDrop(e: DragEvent){
 {/if}
 
 <style>
-.over{
-
-}
+  .over {
+    @apply border-gray-400 scale-105;
+  }
 
 </style>

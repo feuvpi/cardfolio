@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { user, storage, db } from '$lib/firebase';
   import type { PageData } from './$types';
-  import { writeBatch, collection, addDoc } from 'firebase/firestore'
+  import { writeBatch, collection, addDoc, query, getDocs } from 'firebase/firestore'
   import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
   export let data: PageData;
 
   let projectTitle = '';
   let projectDescription = '';
   let uploadedImages: any[] = [];
+  let uploadedImages2: any[] = [];
   let tags: any[] = [];
   let tagInput = ''; 
   const batch = writeBatch(db);
@@ -28,11 +29,22 @@
     const files = event.target.files;
     for (let i = 0; i < files.length; i++) {
       const reader = new FileReader();
-      reader.onload = () => {
+      reader.onload = async () => {
         const imageData = {
           url: reader.result,
           alt: files[i].name,
         };
+
+        if (typeof reader.result === 'string'){
+          const response = await fetch(reader.result);
+          if(response.ok){
+            const blob = await response.blob();
+            uploadedImages2 = [...uploadedImages2, { file: blob, alt: imageData.alt }];
+          } else {
+            console.error("error while loading image")
+          }
+        }
+
         uploadedImages = [...uploadedImages, imageData];
       };
       reader.readAsDataURL(files[i]);
@@ -44,18 +56,41 @@
     uploadedImages = uploadedImages.filter((_, i) => i !== index);
   }
 
+  // Função para contar o número de projetos de um usuário
+async function countUserProjects(userId: string): Promise<number> {
+  const userProjectRef = collection(db, `users/${userId}/projects`);
+
+  try {
+    const q = query(userProjectRef);
+    const querySnapshot = await getDocs(q);
+
+    // Conta o número de documentos na coleção de projetos do usuário
+    const numProjetos = querySnapshot.size;
+
+    return numProjetos;
+  } catch (error) {
+    console.error('Erro ao contar projetos do usuário:', error);
+    throw error;
+  }
+}
+
+
   // -- Function to submit the form
   async function submitForm() {
     const imageUrls = [];
-    for(const image of uploadedImages) {
+    for(const image of uploadedImages2) {
       const storageRef = ref(storage, `projects/${$user!.uid}/${projectTitle}/${image.alt}`);
       const result = await uploadBytes(storageRef, image.file);
       const downloadURL = await getDownloadURL(storageRef);
       imageUrls.push(downloadURL);
     }
 
+    let numberOfProjects = await countUserProjects($user!.uid);
+
     // -- create the object
     const project = {
+      id: crypto.randomUUID(),
+      index: numberOfProjects,
       title: projectTitle,
       description: projectDescription,
       tags: tags,
@@ -66,6 +101,7 @@
     // -- save into the user firebase document
     const userProjectRef = collection(db, `users/${$user!.uid}/projects`);
     try{
+      console.log(project)
       await addDoc(userProjectRef, project)
       showMessage = true
       setTimeout(() => {
