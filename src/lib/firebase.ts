@@ -34,7 +34,8 @@ interface UserData {
 }
 
 interface ProjectData {
-  id: string; // Adicionar um campo 'id' para o identificador único
+  id: string;
+  index: Number; 
   title: string;
   description: string;
   tags: string[];

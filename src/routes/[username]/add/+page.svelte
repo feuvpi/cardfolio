@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { user, storage, db } from '$lib/firebase';
+	import { user, userData, storage, db } from '$lib/firebase';
   import type { PageData } from './$types';
   import { writeBatch, collection, addDoc, query, getDocs } from 'firebase/firestore'
   import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
@@ -60,6 +60,7 @@
 async function countUserProjects(userId: string): Promise<number> {
   const userProjectRef = collection(db, `users/${userId}/projects`);
 
+  console.log($userData?.projects.length)
   try {
     const q = query(userProjectRef);
     const querySnapshot = await getDocs(q);

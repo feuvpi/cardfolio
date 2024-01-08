@@ -18,7 +18,9 @@ const reorder = ({ from, to }: any) => {
   const newList = [...list];
   const temp = newList[from]; // Armazena temporariamente o valor de 'from'
   newList[from] = newList[to]; // Substitui o valor de 'from' pelo valor de 'to'
-  newList[to] = temp; // Coloca o valor armazenado temporariamente na posição 'to'
+  newList[from].index = from;
+  newList[to] = temp;
+  newList[to].index = to;
 
   dispatch("sort", newList);
   list = newList;

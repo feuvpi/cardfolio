@@ -13,7 +13,7 @@
 	$: isTaken = isValid && !isAvailable && !loading;
 	$: isConfirmed = false;
 
-  let username = $userData!.username;
+  let username = $userData?.username ?? "";
   let loading = false;
 	let isAvailable = false;
   let debounceTimer: NodeJS.Timeout;
@@ -103,7 +103,7 @@ $: formIsValid = urlIsValid && titleIsValid;
     }
 
     function consoleCheck(){
-      console.log($userData?.projects[0].imageUrls[0]);
+      console.log($userData?.projects);
     }
 
 
