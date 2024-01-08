@@ -12,11 +12,21 @@
 	$: isTouched = username.length > 0;
 	$: isTaken = isValid && !isAvailable && !loading;
 	$: isConfirmed = false;
+  $: urlIsValid = $formData.url.match(/^(ftp|http|https|):\/\/[^ "]+$/);
+  $: titleIsValid = $formData.title.length < 20 && $formData.title.length > 0;
+  $: formIsValid = urlIsValid && titleIsValid;
+  $: {
+  if (!initialUserDataLoaded && $userData) {
+    username = $userData.username || '';
+    initialUserDataLoaded = true;
+  }
+}
 
-  let username = $userData?.username ?? "";
   let loading = false;
 	let isAvailable = false;
   let debounceTimer: NodeJS.Timeout;
+  let initialUserDataLoaded = false;
+  let username = '';
   const re = /^(?=[a-zA-Z0-9._]{3,16}$)(?!.*[_.]{2})[^_.].*[^_.]$/;
 
 	async function checkAvailability() {
@@ -53,9 +63,7 @@ const formDefaults = {
 const formData = writable(formDefaults)
 let showForm = false;
 
-$: urlIsValid = $formData.url.match(/^(ftp|http|https|):\/\/[^ "]+$/);
-$: titleIsValid = $formData.title.length < 20 && $formData.title.length > 0;
-$: formIsValid = urlIsValid && titleIsValid;
+
 
     function sortList(e: CustomEvent){
       const newList = e.detail;
@@ -178,14 +186,11 @@ $: formIsValid = urlIsValid && titleIsValid;
     <p class="text-success text-sm">@{username} is available.</p>
     {/if}
 <button on:click={() => consoleCheck()} class="btn btn-xs btn-error group-hover:visible transition-all">console</button>
-<p>teste</p>
+<!-- <p>teste</p> -->
   <!-- Campo de entrada para o username -->
-  <div class="mb-4">
-    <textarea class="border-none bg-slate-700 bg-opacity-50 w-full rounded px-2 py-1 font-mono" rows="4" bind:value={$userData.bio}></textarea>
-
+  <div class="my-2">
+    <textarea class="border-none bg-slate-700 bg-opacity-50 w-full rounded px-2 font-mono" rows="4" bind:value={$userData.bio}></textarea>
   </div>
-
-
 <SortableList list={$userData?.projects} on:sort={sortList} let:item let:index>
 
 <div class="group relative">
