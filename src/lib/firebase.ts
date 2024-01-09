@@ -35,7 +35,7 @@ interface UserData {
 
 interface ProjectData {
   id: string;
-  index: Number; 
+  index: string; 
   title: string;
   description: string;
   tags: string[];
@@ -116,6 +116,7 @@ export const userData: Readable<UserData | null> = derived(user, ($user, set) =>
         onSnapshot(userProjectsCollectionRef, (projectsSnapshot) => {
           projectsSnapshot.forEach((projectDoc) => {
             const projectData = projectDoc.data() as ProjectData;
+            projectData.id = projectDoc.id; // Adicionando projectId ao projectData
             userData.projects.push(projectData);
           });
           
@@ -134,25 +135,25 @@ export const userData: Readable<UserData | null> = derived(user, ($user, set) =>
 });
 
 
-export const projectData: Readable<ProjectData[] | null> = derived(user, ($user, set) => {
-  let unsubscribe: () => void;
+// export const projectData: Readable<ProjectData[] | null> = derived(user, ($user, set) => {
+//   let unsubscribe: () => void;
 
-  if ($user) {
-    const projectsRef = collection(db, 'projects');
-    const q = query(projectsRef, where('userID', '==', $user.uid));
+//   if ($user) {
+//     const projectsRef = collection(db, 'projects');
+//     const q = query(projectsRef, where('userID', '==', $user.uid));
 
-    const { subscribe } = writable<ProjectData[] | null>(null, (set) => {
-      unsubscribe = onSnapshot(q, (snapshot) => {
-        const projects: ProjectData[] = [];
-        snapshot.forEach((doc) => {
-          projects.push(doc.data() as ProjectData);
-        });
-        set(projects);
-      });
-    });
+//     const { subscribe } = writable<ProjectData[] | null>(null, (set) => {
+//       unsubscribe = onSnapshot(q, (snapshot) => {
+//         const projects: ProjectData[] = [];
+//         snapshot.forEach((doc) => {
+//           projects.push(doc.data() as ProjectData);
+//         });
+//         set(projects);
+//       });
+//     });
 
-    return () => unsubscribe();
-  } else {
-    set(null);
-  }
-});
+//     return () => unsubscribe();
+//   } else {
+//     set(null);
+//   }
+// });
