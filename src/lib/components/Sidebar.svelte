@@ -1,27 +1,72 @@
 <script>
-      import { auth, userData } from "$lib/firebase";
-      import { signOut } from "firebase/auth";
-      import { goto } from '$app/navigation'
+	// @ts-nocheck
 
-   async function signOutSSR() {
-    const res = await fetch("/api/signin", { method: "DELETE" });
-    await signOut(auth);
-    goto(`/`);
-  }
+	import { auth, userData } from '$lib/firebase';
+	import { signOut } from 'firebase/auth';
+	import { goto } from '$app/navigation';
 
+	export async function load({ params }) {
+    console.log("entrei")
+		console.log(params)
+		const { username } = params;
+	}
+
+	async function signOutSSR() {
+		const res = await fetch('/api/signin', { method: 'DELETE' });
+		await signOut(auth);
+		goto(`/`);
+	}
+
+	async function AddNewProject() {
+			goto(`/${window.location.pathname.split('/')[1]}/profile/add`);
+	}
+
+  async function EditProfilePage() {
+			goto(`/${window.location.pathname.split('/')[1]}/profile/edit`);
+	}
 </script>
 
 <div class="flex h-screen w-16 flex-col justify-between border-0 bg-stone-500 bg-opacity-70">
-    <div>
-      <!-- <div class="inline-flex h-16 w-16 items-center justify-center">
+	<div>
+
+    <button
+    on:click={EditProfilePage}
+    class="mt-2 group relative flex w-full justify-center rounded-lg px-2 w-6 py-4 px-1 text-sm text-gray-500 hover:bg-stone-300 hover:text-gray-700"
+  >
+  <svg xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M304 128a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM49.3 464H398.7c-8.9-63.3-63.3-112-129-112H178.3c-65.7 0-120.1 48.7-129 112zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3z"/></svg>
+
+    <span
+      class="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100"
+    >
+      Edit Profile Page
+    </span>
+  </button>
+
+		<button
+			on:click={AddNewProject}
+			class="mt-2 group relative flex w-full justify-center rounded-lg px-2 w-6 py-4 px-1 text-sm text-gray-500 hover:bg-stone-300 hover:text-gray-700"
+		>
+			<svg xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512"
+				><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path
+					d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"
+				/></svg
+			>
+
+			<span
+				class="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100"
+			>
+				Add Project
+			</span>
+		</button>
+		<!-- <div class="inline-flex h-16 w-16 items-center justify-center">
         <span
           class="grid h-10 w-10 place-content-center rounded-lg bg-gray-100 text-xs text-gray-600"
         >
           L
         </span>
       </div> -->
-  
-      <!-- <div class="border-t border-gray-100">
+
+		<!-- <div class="border-t border-gray-100">
         <div class="px-2">
           <div class="py-4">
             <a
@@ -171,35 +216,33 @@
           </ul>
         </div>
       </div> -->
-    </div>
-  
-    <div class="sticky inset-x-0 bottom-0 bg-stone-500 bg-opacity-70 p-2">
+	</div>
 
-        <button
-        on:click={signOutSSR}
-          class="group relative flex w-full justify-center rounded-lg px-2 py-1.5 text-sm text-gray-500 hover:bg-stone-300 hover:text-gray-700"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5 opacity-75 text-white"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-            />
-          </svg>
-  
-          <span
-            class="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100"
-          >
-            Logout
-          </span>
-        </button>
+	<div class="sticky inset-x-0 bottom-0 bg-stone-500 bg-opacity-70 p-2">
+		<button
+			on:click={signOutSSR}
+			class="group relative flex w-full justify-center rounded-lg px-2 py-1.5 text-sm text-gray-500 hover:bg-stone-300 hover:text-gray-700"
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="h-5 w-5 opacity-75 text-white"
+				fill="none"
+				viewBox="0 0 24 24"
+				stroke="currentColor"
+				stroke-width="2"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+				/>
+			</svg>
 
-    </div>
-  </div>
+			<span
+				class="absolute start-full top-1/2 ms-4 -translate-y-1/2 rounded bg-gray-900 px-2 py-1.5 text-xs font-medium text-white opacity-0 group-hover:opacity-100"
+			>
+				Logout
+			</span>
+		</button>
+	</div>
+</div>
