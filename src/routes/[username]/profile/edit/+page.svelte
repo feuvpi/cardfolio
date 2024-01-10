@@ -1,14 +1,40 @@
 <!-- svelte-ignore missing-declaration -->
 <!-- svelte-ignore missing-declaration -->
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import { db, user, userData } from '$lib/firebase';
-	import { arrayUnion, doc, updateDoc, setDoc, arrayRemove, getDoc, deleteDoc } from 'firebase/firestore';
+	import {
+		arrayUnion,
+		doc,
+		updateDoc,
+		setDoc,
+		arrayRemove,
+		getDoc,
+		deleteDoc
+	} from 'firebase/firestore';
 	import SortableList from '$lib/components/SortableList.svelte';
 	import UserLink from '$lib/components/UserLink.svelte';
 	import { writable } from 'svelte/store';
 
-  $: projectData = $userData?.projects ?? [];
+	let isMobile = false;
+
+	onMount(() => {
+		const mediaQuery = window.matchMedia('(max-width: 768px)'); // Adjust the breakpoint as needed
+		isMobile = mediaQuery.matches;
+
+		const handleResize = () => {
+			isMobile = mediaQuery.matches;
+		};
+
+		window.addEventListener('resize', handleResize);
+
+		return () => {
+			window.removeEventListener('resize', handleResize);
+		};
+	});
+
+	$: projectData = $userData?.projects ?? [];
 	$: isValid = username?.length > 2 && username.length < 16 && re.test(username);
 	$: isTouched = username.length > 0;
 	$: isTaken = isValid && !isAvailable && !loading;
@@ -85,8 +111,8 @@
 		const projectRef = doc(db, `users/${$user!.uid}/projects`, item.id);
 		try {
 			await deleteDoc(projectRef);
-      projectData = projectData.filter(project => project.id !== item.id);
-      console.log($userData!.projects);
+			projectData = projectData.filter((project) => project.id !== item.id);
+			console.log($userData!.projects);
 			console.log('Project successfully deleted!');
 		} catch (error) {
 			console.error("Can't delete project: ", error);
@@ -137,87 +163,166 @@
 
 <!-- {#if $userData } -->
 {#if $userData?.username == $page.params.username}
-	<div class="grid-col-1 align-center">
-		<div class="flex justify-center">
-			<!-- svelte-ignore a11y-img-redundant-alt -->
-			<img
-				src={$userData.photoURL}
-				alt="User Image"
-				class="w-48 h-48 rounded-full object-cover mb-4 item-center align-middle"
-			/>
-		</div>
+	{#if isMobile}
+		<main>
+			<div class="grid-col-1 align-center">
+				
+				<div class="flex justify-center">
+					<!-- svelte-ignore a11y-img-redundant-alt -->
+					<img
+						src={$userData.photoURL}
+						alt="User Image"
+						class="w-48 h-48 rounded-full object-cover mb-4 item-center align-middle"
+					/>
+				</div>
 
-		<!-- <div class="relative">
+				<!-- <div class="relative">
       <input type="text" class="bg-slate-700 bg-opacity-50 text-sm font-mono text-center font-bold border-none rounded px-2 py-1 mb-4 w-full pl-8" bind:value={$userData.username}>
       <span class="absolute py-1 mb-4 inset-y-0 left-2 flex items-center text-gray-500 text-sm font-mono font-bold pointer-events-none">
           cardfolio.card/
       </span>
   </div> -->
 
-		<div
-			class="flex items-center text-center bg-slate-700 bg-opacity-50 text-xl font-mono font-bold border-none rounded px-2 py-1 mb-1 w-full"
-		>
-			<span class="text-gray-500 font-mono text-sm ml-10">cardfolio.card/</span>
-			<input
-				type="text"
-				class="w-full bg-transparent focus:outline-none text-sm font-mono"
-				bind:value={username}
-				on:input={checkAvailability}
-				class:input-error={(!isValid && isTouched) || isTouched}
-				class:input-warning={isTaken}
-				class:input-success={isAvailable && isValid && !loading}
-			/>
-		</div>
-		{#if loading}
-			<p class="text-secondary text-sm">Checking availability of @{username}...</p>
-		{/if}
+				<div
+					class="flex items-center text-center bg-slate-700 bg-opacity-50 text-xl font-mono font-bold border-none rounded px-2 py-1 mb-1 w-full"
+				>
+					<span class="text-gray-500 font-mono text-sm ml-10">cardfolio.card/</span>
+					<input
+						type="text"
+						class="w-full bg-transparent focus:outline-none text-sm font-mono"
+						bind:value={username}
+						on:input={checkAvailability}
+						class:input-error={(!isValid && isTouched) || isTouched}
+						class:input-warning={isTaken}
+						class:input-success={isAvailable && isValid && !loading}
+					/>
+				</div>
+				{#if loading}
+					<p class="text-secondary text-sm">Checking availability of @{username}...</p>
+				{/if}
 
-		{#if !isValid && isTouched}
-			<p class="text-error text-sm">Username must be 3-16 alphanumeric characters.</p>
-		{/if}
+				{#if !isValid && isTouched}
+					<p class="text-error text-sm">Username must be 3-16 alphanumeric characters.</p>
+				{/if}
 
-		{#if isValid && !isAvailable && !loading && !$userData?.username}
-			<p class="text-warning text-sm">@{username} is not available.</p>
-		{/if}
-		{#if isValid && isAvailable && !loading && !isConfirmed}
-			<p class="text-success text-sm">@{username} is available.</p>
-		{/if}
-		<button
+				{#if isValid && !isAvailable && !loading && !$userData?.username}
+					<p class="text-warning text-sm">@{username} is not available.</p>
+				{/if}
+				{#if isValid && isAvailable && !loading && !isConfirmed}
+					<p class="text-success text-sm">@{username} is available.</p>
+				{/if}
+				<!-- <button
 			on:click={() => consoleCheck()}
 			class="btn btn-xs btn-error group-hover:visible transition-all">console</button
-		>
-		<!-- <p>teste</p> -->
-		<!-- Campo de entrada para o username -->
-		<div class="my-2">
-			<textarea
-				class="border-none bg-slate-700 bg-opacity-50 w-full rounded px-2 font-mono"
-				rows="4"
-				bind:value={$userData.bio}
-			/>
-		</div>
-		<SortableList list={projectData} on:sort={sortList} let:item let:index>
-			<div class="group relative">
-				<UserLink {...item} imagesUrls={item.imagesUrls} />
-				<button
-					on:click={() => deleteProject(item)}
-					class="btn btn-xs btn-error invisible group-hover:visible transition-all absolute -right-6 bottom-10"
-					>Delete</button
-				>
-			</div>
-		</SortableList>
+		> -->
+				<!-- <p>teste</p> -->
+				<!-- Campo de entrada para o username -->
+				<div class="my-2">
+					<textarea
+						class="border-none bg-slate-700 bg-opacity-50 w-full rounded px-2 font-mono"
+						rows="4"
+						bind:value={$userData.bio}
+					/>
+				</div>
+				<SortableList list={projectData} on:sort={sortList} let:item let:index>
+					<div class="group relative">
+						<UserLink {...item} imagesUrls={item.imagesUrls} />
+						<button
+							on:click={() => deleteProject(item)}
+							class="btn btn-xs btn-error invisible group-hover:visible transition-all absolute -right-6 bottom-10"
+							>Delete</button
+						>
+					</div>
+				</SortableList>
 
-		{#if isValid && isAvailable && !loading && !isConfirmed}
-			<div class="place-content-center flex">
-				<button
-					type="button"
-					on:click={salvarDadosUsuario}
-					class="mt-4 flex mr-4 items-center place-self-center place-content-center rounded-full bg-indigo-700 w-24 font-mono"
-				>
-					Save
-				</button>
+				{#if isValid && isAvailable && !loading && !isConfirmed}
+					<div class="place-content-center flex">
+						<button
+							type="button"
+							on:click={salvarDadosUsuario}
+							class="mt-4 flex mr-4 items-center place-self-center place-content-center rounded-full bg-indigo-700 w-24 font-mono"
+						>
+							Save
+						</button>
+					</div>
+				{/if}
 			</div>
-		{/if}
-	</div>
+		</main>
+	{:else}
+		<main class="flex h-screen">
+			<div class="w-40 bg-gray-200">
+				<div class="flex justify-center">
+					<!-- svelte-ignore a11y-img-redundant-alt -->
+					<img
+						src={$userData.photoURL}
+						alt="User Image"
+						class="w-48 h-48 rounded-full object-cover mb-4 item-center align-middle"
+					/>
+				</div>
+
+				<!-- <div class="relative">
+      <input type="text" class="bg-slate-700 bg-opacity-50 text-sm font-mono text-center font-bold border-none rounded px-2 py-1 mb-4 w-full pl-8" bind:value={$userData.username}>
+      <span class="absolute py-1 mb-4 inset-y-0 left-2 flex items-center text-gray-500 text-sm font-mono font-bold pointer-events-none">
+          cardfolio.card/
+      </span>
+  </div> -->
+
+				<div
+					class="flex items-center text-center bg-slate-700 bg-opacity-50 text-xl font-mono font-bold border-none rounded px-2 py-1 mb-1 w-full"
+				>
+					<span class="text-gray-500 font-mono text-sm ml-10">cardfolio.card/</span>
+					<input
+						type="text"
+						class="w-full bg-transparent focus:outline-none text-sm font-mono"
+						bind:value={username}
+						on:input={checkAvailability}
+						class:input-error={(!isValid && isTouched) || isTouched}
+						class:input-warning={isTaken}
+						class:input-success={isAvailable && isValid && !loading}
+					/>
+				</div>
+				{#if loading}
+					<p class="text-secondary text-sm">Checking availability of @{username}...</p>
+				{/if}
+
+				{#if !isValid && isTouched}
+					<p class="text-error text-sm">Username must be 3-16 alphanumeric characters.</p>
+				{/if}
+
+				{#if isValid && !isAvailable && !loading && !$userData?.username}
+					<p class="text-warning text-sm">@{username} is not available.</p>
+				{/if}
+				{#if isValid && isAvailable && !loading && !isConfirmed}
+					<p class="text-success text-sm">@{username} is available.</p>
+				{/if}
+				<!-- <button
+			on:click={() => consoleCheck()}
+			class="btn btn-xs btn-error group-hover:visible transition-all">console</button
+		> -->
+				<!-- <p>teste</p> -->
+				<!-- Campo de entrada para o username -->
+				<div class="my-2">
+					<textarea
+						class="border-none bg-slate-700 bg-opacity-50 w-full rounded px-2 font-mono"
+						rows="4"
+						bind:value={$userData.bio}
+					/>
+				</div>
+			</div>
+			<div class="flex-1 bg-gray-300">
+				<SortableList list={projectData} on:sort={sortList} let:item let:index>
+					<div class="group relative">
+						<UserLink {...item} imagesUrls={item.imagesUrls} />
+						<button
+							on:click={() => deleteProject(item)}
+							class="btn btn-xs btn-error invisible group-hover:visible transition-all absolute -right-6 bottom-10"
+							>Delete</button
+						>
+					</div>
+				</SortableList>
+			</div>
+		</main>
+	{/if}
 {:else}
 	<p class="text-red-500">You're not authorized.</p>
 {/if}

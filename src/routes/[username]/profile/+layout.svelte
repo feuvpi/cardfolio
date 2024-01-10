@@ -6,7 +6,6 @@
 	import Sidebar from '$lib/components/Sidebar.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 
-	// $:userNameProp = params
 	let isMobile = false;
 
 	onMount(() => {
@@ -31,7 +30,7 @@
 			<!-- svelte-ignore missing-declaration -->
 			<Sidebar />
 
-			<main class="max-w-sm mx-auto m-4 p-10 bg-slate-700 bg-opacity-50 rounded shadow-xl">
+			<main class=" mx-auto m-4 p-10 bg-slate-700 bg-opacity-50 rounded shadow-xl">
 				<slot />
 			</main>
 		</div>

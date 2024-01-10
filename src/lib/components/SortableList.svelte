@@ -64,9 +64,29 @@ function onDrop(e: DragEvent){
 
 </script>
 
+<style>
+    .sortable-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px; /* Adjust as needed */
+    }
+  
+    @media (min-width: 768px) {
+      .sortable-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Adjust columns and width as needed */
+        gap: 20px; /* Adjust as needed */
+      }
+    }
+
+    .over {
+    @apply border-gray-400 scale-105;
+  }
+  </style>
+
 
 {#if list?.length}
-<ul class="">
+<ul class="sortable-list">
     {#each list as item, index (item.id)}
     <li 
     class="border-2 border-dashed border-transparent transition-all max-w-md w-full"
@@ -86,9 +106,4 @@ function onDrop(e: DragEvent){
 <p class="">No links.</p>
 {/if}
 
-<style>
-  .over {
-    @apply border-gray-400 scale-105;
-  }
 
-</style>
