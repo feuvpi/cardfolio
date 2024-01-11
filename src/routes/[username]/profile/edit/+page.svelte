@@ -249,8 +249,8 @@
 			</div>
 		</main>
 	{:else}
-		<main class="flex h-screen">
-			<div class="w-40 bg-gray-200">
+		<main class="flex h-5/6 w-full m-4 p-2 place-self-center">
+			<div class="w-50 ">
 				<div class="flex justify-center">
 					<!-- svelte-ignore a11y-img-redundant-alt -->
 					<img
@@ -268,7 +268,7 @@
   </div> -->
 
 				<div
-					class="flex items-center text-center bg-slate-700 bg-opacity-50 text-xl font-mono font-bold border-none rounded px-2 py-1 mb-1 w-full"
+					class="flex items-center text-center mx-2 bg-slate-700 bg-opacity-50 text-xl font-mono font-bold border-none rounded py-1 mb-1"
 				>
 					<span class="text-gray-500 font-mono text-sm ml-10">cardfolio.card/</span>
 					<input
@@ -301,7 +301,7 @@
 		> -->
 				<!-- <p>teste</p> -->
 				<!-- Campo de entrada para o username -->
-				<div class="my-2">
+				<div class="m-2">
 					<textarea
 						class="border-none bg-slate-700 bg-opacity-50 w-full rounded px-2 font-mono"
 						rows="4"
@@ -309,7 +309,7 @@
 					/>
 				</div>
 			</div>
-			<div class="flex-1 bg-gray-300">
+			<div class="flex-1 mx-4">
 				<SortableList list={projectData} on:sort={sortList} let:item let:index>
 					<div class="group relative">
 						<UserLink {...item} imagesUrls={item.imagesUrls} />

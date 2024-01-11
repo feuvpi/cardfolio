@@ -26,11 +26,11 @@
 
 <AuthCheck>
 	{#if !isMobile}
-		<div class="flex h-screen">
+		<div class="flex h-screen border-orange-700 border-4">
 			<!-- svelte-ignore missing-declaration -->
 			<Sidebar />
 
-			<main class=" mx-auto m-4 p-10 bg-slate-700 bg-opacity-50 rounded shadow-xl">
+			<main class="flex mx-auto justify-center w-full border-red-700 border-4">
 				<slot />
 			</main>
 		</div>
