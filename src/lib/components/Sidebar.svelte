@@ -4,6 +4,19 @@
 	import { auth, userData } from '$lib/firebase';
 	import { signOut } from 'firebase/auth';
 	import { goto } from '$app/navigation';
+  import { onMount, afterUpdate } from 'svelte';
+  import { page } from '$app/stores';
+
+  let currentPage;
+
+  onMount(() => {
+    currentPage = $page;
+  });
+
+
+  afterUpdate(() => {
+    currentPage = $page;
+  });
 
 	export async function load({ params }) {
     console.log("entrei")
@@ -24,14 +37,38 @@
   async function EditProfilePage() {
 			goto(`/${window.location.pathname.split('/')[1]}/profile/edit`);
 	}
+
+
+  // -- buttons selection colors
+  document.addEventListener('load', () => {
+    console.log("entrei")
+    // Wait for the DOM content to be fully loaded
+    const editProfileButton = document.getElementById('editProfileButton');
+
+    if (editProfileButton) {
+        // Check if the button element with the specified ID exists
+        const currentUrl = window.location.href;
+      console.log(currentUrl);
+        if (currentUrl.includes(`/${window.location.pathname.split('/')[1]}/profile/add`)) {
+            editProfileButton.classList.add('bg-slate-300');
+        } else {
+            editProfileButton.classList.remove('bg-slate-300');
+        }
+    }
+});
 </script>
 
+<!-- svelte-ignore missing-declaration -->
+<!-- svelte-ignore missing-declaration -->
+<!-- svelte-ignore missing-declaration -->
 <div class="flex h-screen w-16 flex-col justify-between border-0 bg-stone-500 bg-opacity-70">
 	<div>
 
     <button
     on:click={EditProfilePage}
-    class="mt-2 group relative flex w-full justify-center rounded-lg px-2 w-6 py-4 px-1 text-sm text-gray-500 hover:bg-stone-300 hover:text-gray-700"
+    class="mt-2 group relative flex w-full justify-center rounded-lg px-2 w-6 py-4 px-1 text-sm text-gray-500 hover:bg-stone-300 hover:text-gray-700 "
+    
+    id="editProfileButton"
   >
   <svg xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M304 128a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM49.3 464H398.7c-8.9-63.3-63.3-112-129-112H178.3c-65.7 0-120.1 48.7-129 112zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3z"/></svg>
 

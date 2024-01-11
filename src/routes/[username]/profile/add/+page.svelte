@@ -128,7 +128,7 @@ async function countUserProjects(userId: string): Promise<number> {
 <div class="container mx-auto py-8">
     <h1 class="text-3xl font-bold mb-4 text-center">Add New Project</h1>
   
-    <form on:submit|preventDefault={submitForm} class="max-w-md mx-auto">
+    <form on:submit|preventDefault={submitForm} class="max-w-md mx-auto bg-indigo-400 bg-opacity-30 p-4 rounded-xl">
       <div class="mb-4">
         <label for="projectTitle" class="block mb-2">Project Title</label>
         <input type="text" id="projectTitle" bind:value={projectTitle} class="input input-bordered w-full" />
@@ -158,7 +158,7 @@ async function countUserProjects(userId: string): Promise<number> {
   
       <div class="mb-4">
         <label for="imageUpload" class="block mb-2">Upload Images</label>
-        <input type="file" id="imageUpload" multiple class="input input-bordered w-full" on:change={handleImageUpload} />
+        <input type="file" id="imageUpload" multiple class="input input-bordered w-full p-2" on:change={handleImageUpload} />
       </div>
   
       <div class="flex flex-wrap -mx-2 mb-4">
