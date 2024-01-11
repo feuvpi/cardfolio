@@ -250,7 +250,7 @@
 		</main>
 	{:else}
 		<main class="flex h-5/6 w-full m-4 p-2 place-self-center">
-			<div class="w-50 ">
+			<div class="w-50 bg-slate-700 bg-opacity-50 rounded-md p-2">
 				<div class="flex justify-center">
 					<!-- svelte-ignore a11y-img-redundant-alt -->
 					<img
@@ -309,7 +309,7 @@
 					/>
 				</div>
 			</div>
-			<div class="flex-1 mx-4">
+			<div class="flex-1 mx-4 bg-slate-700 bg-opacity-50 rounded-md p-2">
 				<SortableList list={projectData} on:sort={sortList} let:item let:index>
 					<div class="group relative">
 						<UserLink {...item} imagesUrls={item.imagesUrls} />

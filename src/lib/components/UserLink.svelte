@@ -5,7 +5,6 @@
     export let title = '';
     export let username = '';
     export let url = `cardfolio.card/${username}/${title}`
-
     export let imageUrls: string[] = [];
 
 
@@ -13,9 +12,11 @@
     let firstImageUrl = imageUrls.length > 0 ? imageUrls[0] : '/${default}.png';
 </script>
 
-<a href={url} class="mb-2 stack w-full max-w-md text-center bg-base-300 flex justify-center items-center p-2 rounded-md not-prose font-mono no-underline">
-    <img src={firstImageUrl} alt={icon} width="48" height="48" class="w-12 rounded-md"/>
-    <span class="font-mono text-lg text-white font-bold">{title}</span>
+<a href={url} class="h-48 mb-2 w-full max-w-md text-center bg-base-100 flex justify-center items-center p-2 rounded-md font-mono relative overflow-hidden">
+    <img src={firstImageUrl} alt={icon} class="absolute z-0 w-full h-full object-cover rounded-md"/>
+    <div class="absolute bg-opacity-50 bottom-0 w-full h-10 bg-black text-white p-2 rounded-b-md z-10">
+        {title}
+    </div>
 </a>
 
 
