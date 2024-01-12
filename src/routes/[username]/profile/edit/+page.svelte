@@ -309,7 +309,7 @@
 					/>
 				</div>
 			</div>
-			<div class="flex-1 mx-4 bg-slate-700 bg-opacity-50 rounded-md p-2">
+			<div class="flex-1 mx-4 bg-slate-700 bg-opacity-50 rounded-md p-2 overflow-y-auto overflow-x-hidden">
 				<SortableList list={projectData} on:sort={sortList} let:item let:index>
 					<div class="group relative">
 						<UserLink {...item} imagesUrls={item.imagesUrls} />
