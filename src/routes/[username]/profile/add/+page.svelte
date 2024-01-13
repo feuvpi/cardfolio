@@ -1,9 +1,15 @@
 <script lang="ts">
 	import { user, userData, storage, db } from '$lib/firebase';
+  import { onMount } from 'svelte';
   import type { PageData } from './../add/$types';
   import { writeBatch, collection, addDoc, query, getDocs } from 'firebase/firestore'
   import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
   export let data: PageData;
+
+	onMount(() => {
+
+	});
+
 
   let projectTitle = '';
   let projectDescription = '';
