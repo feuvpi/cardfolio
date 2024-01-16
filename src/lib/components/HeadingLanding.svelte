@@ -7,7 +7,7 @@
     $: {
     if ($userData && $userData.username) {
 
-      goto(`/${$userData.username}/edit`);
+      goto(`/${$userData.username}/profile/edit`);
     } else if ($userData) {
         goto('/login/username');
     }
