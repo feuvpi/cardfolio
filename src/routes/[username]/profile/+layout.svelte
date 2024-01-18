@@ -24,23 +24,28 @@
 	});
 </script>
 
-<AuthCheck>
-	{#if !isMobile}
-		<div class="flex h-screen border-orange-700 border-4">
-			<!-- svelte-ignore missing-declaration -->
-			<Sidebar />
+<AnimatedRoute>
+	<AuthCheck>
+		{#if !isMobile}
+			<div class="flex h-screen border-orange-700 border-4">
+				<!-- svelte-ignore missing-declaration -->
+				<Sidebar />
+	
+				<main class="flex mx-auto justify-center w-full border-red-700 border-4">
+					<slot />
+				</main>
+			</div>
+		{:else}
+			<div class="flex flex-col h-screen overflow-x-hidden">
+				<Navbar />
+	
+				<main class="max-w-sm m-4 p-10 bg-slate-700 bg-opacity-50 rounded shadow-xl">
+					<slot />
+				</main>
+			</div>
+		{/if}
+	</AuthCheck>
 
-			<main class="flex mx-auto justify-center w-full border-red-700 border-4">
-				<slot />
-			</main>
-		</div>
-	{:else}
-		<div class="flex flex-col h-screen overflow-x-hidden">
-			<Navbar />
 
-			<main class="max-w-sm m-4 p-10 bg-slate-700 bg-opacity-50 rounded shadow-xl">
-				<slot />
-			</main>
-		</div>
-	{/if}
-</AuthCheck>
+</AnimatedRoute>
+
