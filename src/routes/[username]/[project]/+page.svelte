@@ -1,12 +1,11 @@
 <script lang="ts">
     import type { PageData } from './$types';
-    
     export let data: PageData;
 
      // Define props to receive project details
   // export let projectTitle: any;
   // export let projectDescription: any;
-  // export let projectImages: any;
+  // export let projectImages: 
 
   function openImageModal(imageUrl: any) {
       // Implement logic to showcase the image in a larger view
