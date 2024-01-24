@@ -18,7 +18,7 @@
         </h1>
   
         <p class="mx-auto mt-4 max-w-xl sm:text-xl/relaxed">
-            Experience the convenience of presenting your diverse portfolio, social profiles, and latest updates through a unified and easily accessible interface. 
+            EExperience the convenience of presenting your diverse portfolio, social profiles, and latest updates through a unified and easily accessible interface. 
         </p>
   
         <div class="mt-8 flex flex-wrap justify-center gap-4">

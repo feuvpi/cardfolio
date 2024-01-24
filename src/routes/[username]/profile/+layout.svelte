@@ -6,6 +6,7 @@
 	import Sidebar from '$lib/components/Sidebar.svelte';
 	import Navbar from '$lib/components/Navbar.svelte';
 
+	// -- test 
 	let isMobile = false;
 
 	onMount(() => {
@@ -45,7 +46,5 @@
 			</div>
 		{/if}
 	</AuthCheck>
-
-
 </AnimatedRoute>
 
