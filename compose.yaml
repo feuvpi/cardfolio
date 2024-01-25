@@ -1,0 +1,9 @@
+services:
+  postgre:
+    image: postgres:13.13
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: pg1234
+      POSTGRES_USER: useradmin
+      POSTGRE_DB: mypostgrescontainer
