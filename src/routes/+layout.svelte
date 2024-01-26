@@ -25,4 +25,4 @@
     <slot />
 </div>
 
-<!-- <svelte:window bind:innerWidth={screenSize} /> -->
+
