@@ -13,7 +13,7 @@
         <div class="flex justify-center">
             <!-- svelte-ignore a11y-img-redundant-alt -->
             <img
-                src={#}
+                src={""}
                 alt="User Image"
                 class="w-48 h-48 rounded-full object-cover mb-4 item-center align-middle"
             />
