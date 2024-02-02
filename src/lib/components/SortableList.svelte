@@ -10,7 +10,9 @@ interface Item {
   }
 
 export let list: any[];
+export let isSortable = true; // Declare isSortable as a prop
 let isOver: string | boolean = false;
+
 
 const dispatch = createEventDispatcher();
 
@@ -86,14 +88,15 @@ function onDrop(e: DragEvent){
 
 
 {#if list?.length}
-<ul class="sortable-list">
+<!-- {#if isSortable} -->
+<ul class="sortable-list" >
     {#each list as item, index (item.id)}
     <li 
     class="border-2 border-dashed border-transparent transition-all max-w-md w-full"
     class:over={item.id === isOver}
     data-index={index}
     data-id={item.id}
-    draggable="true"
+    draggable={isSortable ? "true" : "false"} 
     on:dragstart={onDragStart}
     on:dragover|preventDefault={onDragOver}
     on:dragleave={onDragLeave}
