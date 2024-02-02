@@ -89,7 +89,7 @@ function onDrop(e: DragEvent){
 
 {#if list?.length}
 <!-- {#if isSortable} -->
-<ul class="sortable-list" >
+<ul class="sortable-list">
     {#each list as item, index (item.id)}
     <li 
     class="border-2 border-dashed border-transparent transition-all max-w-md w-full"
