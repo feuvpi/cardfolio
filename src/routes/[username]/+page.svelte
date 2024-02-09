@@ -1,70 +1,17 @@
-<script context="module" lang="ts">
-    interface Params {
-        [key: string]: any;
-    }
-
-    export async function load({ params }: { params: Params }): Promise<{ props: any }> {
-        const { username } = params;
-    
-        // Fetch the user data using the username to get the UUID
-        const userResponse = await fetch(`https://firestore.googleapis.com/v1/projects/auth-app-e21d2/databases/(default)/documents/usernames/${username}`);
-
-        if (!userResponse.ok) {
-            return { props: { userData: null } };
-        }
-
-
-        const user = await userResponse.json();
-    
-        // Fetch the projects using the UUID
-        const userDataResponse = await fetch(`https://firestore.googleapis.com/v1/projects/auth-app-e21d2/databases/(default)/documents/user/${user.uuid}`);
-
-        if (!userDataResponse.ok) {
-            return { props: { userData: null } };
-        }
-
-
-        const userData = await userDataResponse.json();
-
-        if(userData === undefined){
-            return { props: { userData: true } };
-        }
-    
-        console.log('userData:', userData);
-        return { props: { userData } };
-    }
-</script>
 
 <script lang="ts">
-interface UserData {
-  username: string;
-  bio: string;
-  photoURL: string;
-  published: boolean;
-  links: any[];
-  projects: ProjectData[];
-}
-
-interface ProjectData {
-  id: string;
-  index: string; 
-  title: string;
-  description: string;
-  tags: string[];
-  imageUrls: string[];
-  userId: string;
-}
-
-
     import SortableList from '$lib/components/SortableList.svelte';
     import UserLink from '$lib/components/UserLink.svelte';
-    export let userData: UserData;
-    console.log(userData)
+    
+
     let isMobile = false;
+
+    /** @type {import('./$types').PageData} */
+	export let data: any;
+
 </script>
 
-{#if userData !== null 
-&& userData !== undefined}
+{#if data.username !== undefined}
 {#if isMobile}
 <main>
     <div class="grid-col-1 align-center">
@@ -100,10 +47,10 @@ interface ProjectData {
             <textarea
                 class="border-none bg-slate-700 bg-opacity-50 w-full rounded px-2 font-mono"
                 rows="4"
-                value={userData.bio}
+                value={data.bio}
             />
         </div>
-        <SortableList list={userData.projects} isSortable={Boolean(false)} let:item let:index>
+        <SortableList list={data.projects} isSortable={Boolean(false)} let:item let:index>
             <div class="group relative">
                 <UserLink {...item} imagesUrls={item.imagesUrls} />
             </div>
@@ -116,7 +63,7 @@ interface ProjectData {
         <div class="flex justify-center">
             <!-- svelte-ignore a11y-img-redundant-alt -->
             <img
-                src={userData.photoURL}
+                src={data.photoURL}
                 alt="User Image"
                 class="w-48 h-48 rounded-full object-cover mb-4 item-center align-middle"
             />
@@ -144,12 +91,12 @@ interface ProjectData {
             <textarea
                 class="border-none bg-slate-700 bg-opacity-50 w-full rounded px-2 font-mono"
                 rows="4"
-                bind:value={userData.bio}
+                bind:value={data.bio}
             />
         </div>
     </div>
     <div class="flex-1 mx-4 bg-slate-700 bg-opacity-50 rounded-md p-2 overflow-y-auto overflow-x-hidden">
-        <SortableList list={userData.projects} isSortable={Boolean(false)} let:item let:index>
+        <SortableList list={data.projects} isSortable={Boolean(false)} let:item let:index>
             <div class="group relative">
                 <UserLink {...item} imagesUrls={item.imagesUrls} />
             </div>
